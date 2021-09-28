@@ -54,4 +54,7 @@ DefaultValue = https://repo1.maven.org/maven2
 DefaultValue = https://jcenter.bintray.com
 
 [Plugin "java"]
+Toolchain = //third_party/java:toolchain
 
+[FeatureFlags]
+ExcludeJavaRules = true

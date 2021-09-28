@@ -1,5 +1,17 @@
 package(default_visibility = ["PUBLIC"])
 
+java_toolchain(
+    name = "toolchain",
+    hashes = [
+        "dbbf98ca93b44a0c81df5a3a4f2cebf467ec5c30e28c359e26615ffbed0b454f",
+        "f1d2d566c189075c5e543076df61b452f830d8893bbc49b6fb2057070ff97818",
+    ],
+    jdk_url = {
+        "linux": "https://corretto.aws/downloads/resources/11.0.8.10.1/amazon-corretto-11.0.8.10.1-linux-x64.tar.gz",
+        "darwin": "https://corretto.aws/downloads/resources/11.0.8.10.1/amazon-corretto-11.0.8.10.1-macosx-x64.tar.gz",
+    },
+)
+
 maven_jar(
     name = "junit",
     hash = "59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a",
