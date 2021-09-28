@@ -1,0 +1,57 @@
+[Please]
+version = 16.9.0
+
+[Parse]
+PreloadSubincludes = //build_defs:java
+
+[PluginDefinition]
+Name = java
+
+[PluginConfig "javac_tool"]
+ConfigKey = JavacTool
+DefaultValue = "javac"
+
+[PluginConfig "javac_flags"]
+ConfigKey = JavacFlags
+Optional = True
+
+[PluginConfig "javac_test_flags"]
+ConfigKey = JavacTestFlags
+Optional = True
+
+[PluginConfig "junit_runner"]
+ConfigKey = JunitRunner
+DefaultValue = //_please:junit_runner
+
+[PluginConfig "source_level"]
+ConfigKey = SourceLevel
+DefaultValue = 8
+
+[PluginConfig "target_level"]
+ConfigKey = TargetLevel
+DefaultValue = 8
+
+[PluginConfig "release_level"]
+ConfigKey = ReleaseLevel
+Optional = true
+
+[PluginConfig "javac_worker"]
+ConfigKey = JavacWorker
+Optional = true
+
+[PluginConfig "toolchain"]
+ConfigKey = Toolchain
+Optional = true
+
+[PluginConfig "default_test_package"]
+ConfigKey = DefaultTestPackage
+Optional = true
+
+[PluginConfig "default_maven_repo"]
+ConfigKey = DefaultMavenRepo
+Repeatable = true
+DefaultValue = https://repo1.maven.org/maven2
+DefaultValue = https://jcenter.bintray.com
+
+[Plugin "java"]
+
