@@ -1,5 +1,5 @@
 [Please]
-version = 16.9.0
+version = 16.10.1
 
 [Parse]
 PreloadSubincludes = //build_defs:java
