@@ -48,8 +48,8 @@ Optional = true
 ConfigKey = DefaultTestPackage
 Optional = true
 
-[PluginConfig "default_maven_repo"]
-ConfigKey = DefaultMavenRepo
+[PluginConfig "maven_repo"]
+ConfigKey = MavenRepo
 Repeatable = true
 DefaultValue = https://repo1.maven.org/maven2
 DefaultValue = https://jcenter.bintray.com

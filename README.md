@@ -87,4 +87,113 @@ Toolchain = //third_party/java:toolchain
 
 # Configuration
 
-TODO - see the `.plzconfig` in this repo for now
+Plugins are configured through the Plugin section like so:
+```
+[Plugin "Java"]
+JavacTool = /opt/java/bin/javac
+```
+
+The available configuration options for this plugin are documented here. 
+
+## JavacTool 
+The path to the Java compiler to use. Defaults to `javac`.
+
+```
+[Plugin "Java"]
+JavacTool = /opt/java/bin/javac
+```
+
+## JavacFlags
+Any additional flags to apply to the javac tool. 
+
+```
+[Plugin "Java"]
+JavacFalgs = --flag1 --flag2
+```
+
+## JavacTestFlags
+Any additional flags to apply to the javac tool when compiling tests. 
+
+```
+[Plugin "Java"]
+TestJavacFlags = --flag1 --flag2
+```
+
+## JunitRunner
+The tool used to run Java tests. Defaults to the junit runner for this plugin version 
+i.e. `@java_rules//tools:junit_runner`
+
+```
+[Plugin "Java"]
+JunitRunner = /opts/please/bin/junit_runner
+```
+
+or
+
+```
+[Plugin "Java"]
+JunitRunner = //tools:my_custom_junit_runner
+```
+
+## SourceLevel
+The source level of the project. Defaults to 8. 
+```
+[Plugin "Java"]
+SourceLevel = 15
+```
+
+## TargetLevel
+The target level of the project. Defaults to 8.
+```
+[Plugin "Java"]
+TargetLevel = 15
+```
+
+## ReleaseLevel
+The release level of the project. Defaults to 8.
+```
+[Plugin "Java"]
+ReleaseLevel = 15
+```
+
+## JavacWorker
+If set, Please will use this javac worker rather than javac directly. This can speed up compile times as the javac 
+process can be reused between build actions.
+
+To start using the javac worker, add this config to your repo, where `java_rules` is the name of the plugin's 
+`github_repo()` rule:
+
+```
+[Plugin "Java"]
+JavacWorker = @java_rules//tools:javac_worker
+```
+
+## Toolchain
+If set, please will use the jdk provided by the `java_toolchain()` rule specified by this build label. See the toolchain 
+section above for more info.
+
+```
+[Plugin "Java"]
+Toolchain = //third_party/java:toolchain
+```
+
+## DefaultTestPackage
+The test package to use when none is specifically set on the `java_test()` rule. If not set, Please will run all tests
+present in the `.jar` that are not from third party code. 
+
+```
+[Plugin "Java"]
+DefaultTestPackage = please.build.
+```
+
+## MavenRepo
+The maven repositories to load jars from. This value can be repeated and defaults to `https://repo1.maven.org/maven2` 
+and `https://jcenter.bintray.com`. 
+
+To add a custom repo, you may do so by setting the following:  
+```
+[Plugin "Java"]
+MavenRepo = https://jcenter.bintray.com
+MavenRepo = https://repo1.maven.org/maven2
+MavenRepo = https://maven.repo.org
+```
