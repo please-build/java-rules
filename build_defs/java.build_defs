@@ -400,7 +400,7 @@ def maven_jar(name:str, id:str, repository:str|list=None, hash:str=None, hashes:
     group, artifact, version, sources, licences = _parse_maven_artifact(id, sources, licences)
     artifact_type = '.' + artifact_type
     out_artifact_type = artifact_type
-    repository = repository or CONFIG.JAVA.DEFAULT_MAVEN_REPO
+    repository = repository or CONFIG.JAVA.MAVEN_REPO
     repos = [repository] if isinstance(repository, str) else repository
     if classifier:
         classifier = '-' + classifier
