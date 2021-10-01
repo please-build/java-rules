@@ -59,3 +59,28 @@ maven_jar(
     id = "build.please:javac-worker:13.4.0",
     deps = [":gson"],
 )
+
+maven_jar(
+    name = "logback-classic",
+    hash = "98c3f18f5d0d642cd5f327cc724566cd19649626c7d88f70143bd704c94157d5",
+    id = "ch.qos.logback:logback-classic:1.1.3",
+    test_only = True,  # Only used in one test.
+    deps = [
+        ":logback-core",
+        ":slf4j-api",
+    ],
+)
+
+maven_jar(
+    name = "logback-core",
+    hash = "47c0fd342995d3315b8faccacc324b2a76143b27c430d4b2d6a29eabc31f5c14",
+    id = "ch.qos.logback:logback-core:1.1.3",
+    test_only = True,
+)
+
+maven_jar(
+    name = "slf4j-api",
+    hash = "3863e27005740d4d1289bf87b113efea115e9a22408a7d623be8004991232bfe",
+    id = "org.slf4j:slf4j-api:1.7.10",
+    test_only = True,
+)

@@ -62,12 +62,11 @@ maven_jar(
 
 Then add this to your `.plzconfig`:
 ```
-#.plzconfig
 [Parse]
 PreloadSubincludes = @java_rules//build_defs:java
 ```
-Alternatively if you don't want to use Java everywhere, you may add `subinclude("@java_rules//build_defs:java")` to each 
-BUILD file that uses the Java rules.
+Alternatively, if you're not using Java everywhere, you may add `subinclude("@java_rules//build_defs:java")` to each 
+BUILD individually. 
 
 ## Toolchain
 By default, Please will use the JDK on the path. Optionally, you may use `java_toolchain()` to manage your JDK:
@@ -89,8 +88,8 @@ Toolchain = //third_party/java:toolchain
 
 Plugins are configured through the Plugin section like so:
 ```
-[Plugin "Java"]
-JavacTool = /opt/java/bin/javac
+[Plugin "java"]
+SomeConfig = some value
 ```
 
 The available configuration options for this plugin are documented here. 
@@ -99,7 +98,7 @@ The available configuration options for this plugin are documented here.
 The path to the Java compiler to use. Defaults to `javac`.
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 JavacTool = /opt/java/bin/javac
 ```
 
@@ -107,7 +106,7 @@ JavacTool = /opt/java/bin/javac
 Any additional flags to apply to the javac tool. 
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 JavacFalgs = --flag1 --flag2
 ```
 
@@ -115,7 +114,7 @@ JavacFalgs = --flag1 --flag2
 Any additional flags to apply to the javac tool when compiling tests. 
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 TestJavacFlags = --flag1 --flag2
 ```
 
@@ -124,35 +123,35 @@ The tool used to run Java tests. Defaults to the junit runner for this plugin ve
 i.e. `@java_rules//tools:junit_runner`
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 JunitRunner = /opts/please/bin/junit_runner
 ```
 
 or
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 JunitRunner = //tools:my_custom_junit_runner
 ```
 
 ## SourceLevel
 The source level of the project. Defaults to 8. 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 SourceLevel = 15
 ```
 
 ## TargetLevel
 The target level of the project. Defaults to 8.
 ```
-[Plugin "Java"]
+[Plugin "java"]
 TargetLevel = 15
 ```
 
 ## ReleaseLevel
 The release level of the project. Defaults to 8.
 ```
-[Plugin "Java"]
+[Plugin "java"]
 ReleaseLevel = 15
 ```
 
@@ -164,7 +163,7 @@ To start using the javac worker, add this config to your repo, where `java_rules
 `github_repo()` rule:
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 JavacWorker = @java_rules//tools:javac_worker
 ```
 
@@ -173,7 +172,7 @@ If set, please will use the jdk provided by the `java_toolchain()` rule specifie
 section above for more info.
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 Toolchain = //third_party/java:toolchain
 ```
 
@@ -182,7 +181,7 @@ The test package to use when none is specifically set on the `java_test()` rule.
 present in the `.jar` that are not from third party code. 
 
 ```
-[Plugin "Java"]
+[Plugin "java"]
 DefaultTestPackage = please.build.
 ```
 
@@ -192,7 +191,7 @@ and `https://jcenter.bintray.com`.
 
 To add a custom repo, you may do so by setting the following:  
 ```
-[Plugin "Java"]
+[Plugin "java"]
 MavenRepo = https://jcenter.bintray.com
 MavenRepo = https://repo1.maven.org/maven2
 MavenRepo = https://maven.repo.org

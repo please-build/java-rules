@@ -224,7 +224,7 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
     )
 
 def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, deps:list=[],
-                data:list=None, visibility:list=None, jvm_args:str=None,
+                data:list=None, visibility:list=None, jvm_args:str=None, labels:list=[],
                 self_executable:bool=True, manifest:str=None, toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Compiles a .jar from a set of Java libraries.
 
@@ -237,6 +237,7 @@ def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, dep
       data (list): Runtime data for this rule.
       visibility (list): Visibility declaration of this rule.
       jvm_args (str): Arguments to pass to the JVM in the run script.
+      labels (list): any labels to apply to this rule.
       self_executable (bool): True to make the jar self executable.
       manifest (str): Manifest file to put into the jar. Can't be passed at the same time as
                       main_class.
@@ -274,7 +275,7 @@ def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, dep
         requires=['java'],
         visibility=visibility,
         tools=tools,
-        labels=None if self_executable else ['java_non_exe'],
+        labels=labels if self_executable else ['java_non_exe'] + labels,
     )
 
 
