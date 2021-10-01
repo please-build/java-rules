@@ -56,6 +56,7 @@ DefaultValue = https://jcenter.bintray.com
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
+JunitRunner = //tools/junit_runner
 
 [FeatureFlags]
 ExcludeJavaRules = true
