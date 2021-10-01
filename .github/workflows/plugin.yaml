@@ -7,3 +7,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: ./pleasew test -e e2e
       - run: ./pleasew test -i e2e
+  test-subrepo:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cd example && ../pleasew build && ../pleasew test
