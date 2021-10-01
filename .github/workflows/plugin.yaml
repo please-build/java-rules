@@ -6,8 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ./pleasew test -e e2e
+      - run: ./pleasew build --repo_root example
+      - run: ./pleasew test --repo_root example
       - run: ./pleasew test -i e2e
-  test-subrepo:
-    runs-on: ubuntu-latest
-    steps:
-      - run: cd example && ../pleasew build && ../pleasew test
