@@ -1,3 +1,4 @@
+subinclude("//build_defs:java")
 
 java_binary(
     name = "junit_runner",

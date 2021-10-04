@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 java_test(
     name = "source_map_test",
     srcs = ["SourceMapTest.java"],

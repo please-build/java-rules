@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 java_library(
     name = "lib",
     srcs = glob(["build/please/**.java"]),

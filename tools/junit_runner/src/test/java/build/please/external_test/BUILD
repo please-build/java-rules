@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 java_test(
     name = "external_test",
     srcs = ["ExternalTest.java"],

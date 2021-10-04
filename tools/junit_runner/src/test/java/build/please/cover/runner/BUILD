@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 java_test(
     name = "please_coverage_runner_test",
     srcs = [

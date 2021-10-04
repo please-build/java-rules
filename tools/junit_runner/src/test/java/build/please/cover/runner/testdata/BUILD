@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 java_library(
     name = "testdata",
     srcs = [

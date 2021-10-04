@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 java_test(
     name = "please_coverage_class_loader_test",
     srcs = ["PleaseCoverageClassLoaderTest.java"],
