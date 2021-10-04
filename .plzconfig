@@ -2,7 +2,6 @@
 version = 16.10.1
 
 [Parse]
-PreloadSubincludes = //build_defs:java
 BlacklistDirs = example
 
 [PluginDefinition]
