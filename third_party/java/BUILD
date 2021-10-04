@@ -1,3 +1,5 @@
+subinclude("//build_defs:java")
+
 package(default_visibility = ["PUBLIC"])
 
 java_toolchain(

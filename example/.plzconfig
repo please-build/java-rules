@@ -3,3 +3,6 @@ PreloadSubincludes = @java_rules//build_defs:java
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
+
+[FeatureFlags]
+ExcludeJavaRules = true

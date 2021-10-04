@@ -6,7 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ./pleasew test -e e2e
-      - run: ./pleasew build --repo_root example
       - run: ./pleasew test --repo_root example
       - run: ./pleasew test -i e2e
   release:
