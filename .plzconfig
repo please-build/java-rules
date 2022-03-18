@@ -1,5 +1,5 @@
 [Please]
-version = 16.10.1
+version = 16.19.0
 
 [Parse]
 BlacklistDirs = example
@@ -55,6 +55,7 @@ DefaultValue = https://jcenter.bintray.com
 
 [PluginConfig "home"]
 ConfigKey = Home
+Optional = true
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
