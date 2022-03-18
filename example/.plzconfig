@@ -2,6 +2,7 @@
 PreloadSubincludes = ///java//build_defs:java
 
 [Plugin "java"]
+Target = //plugins:java
 Toolchain = //third_party/java:toolchain
 
 [FeatureFlags]
