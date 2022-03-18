@@ -187,12 +187,13 @@ DefaultTestPackage = please.build.
 
 ## MavenRepo
 The maven repositories to load jars from. This value can be repeated and defaults to `https://repo1.maven.org/maven2` 
-and `https://jcenter.bintray.com`. 
+and `https://repo.maven.apache.org/maven2`, the canonical Maven Central repository URLs. 
 
-To add a custom repo, you may do so by setting the following:  
+To add a custom repo, you may do so by setting the following:
+
 ```
 [Plugin "java"]
-MavenRepo = https://jcenter.bintray.com
 MavenRepo = https://repo1.maven.org/maven2
+MavenRepo = https://repo.maven.apache.org/maven2
 MavenRepo = https://maven.repo.org
 ```
