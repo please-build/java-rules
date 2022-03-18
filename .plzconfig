@@ -1,5 +1,5 @@
 [Please]
-version = 16.10.1
+version = 16.20.0-beta.9
 
 [Parse]
 BlacklistDirs = example
@@ -52,6 +52,10 @@ ConfigKey = MavenRepo
 Repeatable = true
 DefaultValue = https://repo1.maven.org/maven2
 DefaultValue = https://repo.maven.apache.org/maven2
+
+[PluginConfig "home"]
+ConfigKey = Home
+Optional = true
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
