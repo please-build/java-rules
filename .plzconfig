@@ -10,18 +10,22 @@ Name = java
 [PluginConfig "javac_tool"]
 ConfigKey = JavacTool
 DefaultValue = "javac"
+Inherit = True
 
 [PluginConfig "javac_flags"]
 ConfigKey = JavacFlags
 Optional = True
+Inherit = True
 
 [PluginConfig "javac_test_flags"]
 ConfigKey = JavacTestFlags
 Optional = True
+Inherit = True
 
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
 DefaultValue = /////_please:junit_runner
+Inherit = True
 
 [PluginConfig "source_level"]
 ConfigKey = SourceLevel
@@ -30,22 +34,27 @@ DefaultValue = 8
 [PluginConfig "target_level"]
 ConfigKey = TargetLevel
 DefaultValue = 8
+Inherit = True
 
 [PluginConfig "release_level"]
 ConfigKey = ReleaseLevel
 Optional = true
+Inherit = True
 
 [PluginConfig "javac_worker"]
 ConfigKey = JavacWorker
 Optional = true
+Inherit = True
 
 [PluginConfig "toolchain"]
 ConfigKey = Toolchain
 Optional = true
+Inherit = True
 
 [PluginConfig "default_test_package"]
 ConfigKey = DefaultTestPackage
 Optional = true
+Inherit = True
 
 [PluginConfig "maven_repo"]
 ConfigKey = MavenRepo
@@ -56,6 +65,7 @@ DefaultValue = https://repo.maven.apache.org/maven2
 [PluginConfig "home"]
 ConfigKey = Home
 Optional = true
+Inherit = True
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
