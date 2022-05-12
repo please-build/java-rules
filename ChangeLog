@@ -1,10 +1,11 @@
+Version 0.2.2
+--------------
+    * Inherit config correctly
+
 Version 0.2.1
 --------------
-
     * Make the junit runner default to an absolute label 
-
 
 Version 0.1.0
 --------------
-
     * First release
