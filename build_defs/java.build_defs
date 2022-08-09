@@ -114,7 +114,7 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
             },
             test_only = test_only,
             visibility = visibility,
-            deps = deps,
+            deps = deps + exported_deps,
         )
 
         return build_rule(
