@@ -3,7 +3,7 @@
 def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], resources_root:str=None,
                  deps:list=[], modular:bool=False, exported_deps:list=None, visibility:list=None,
                  test_only:bool&testonly=False, javac_flags:list&javacopts=None, labels:list=[],
-                 toolchain:str=CONFIG.JAVA_TOOLCHAIN):
+                 toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Compiles Java source to a .jar which can be collected by other rules.
 
     Args:
