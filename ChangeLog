@@ -1,3 +1,7 @@
+Version 0.2.3
+-------------
+    *  Fix default value of `toolchain` in `java_library`
+
 Version 0.2.2
 --------------
     * Inherit config correctly
