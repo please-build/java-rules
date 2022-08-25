@@ -1,3 +1,7 @@
+Version 0.2.4
+-------------
+    *  Don't set javac_tool by default
+
 Version 0.2.3
 -------------
     *  Fix default value of `toolchain` in `java_library`

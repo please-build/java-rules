@@ -58,6 +58,9 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
         javac = CONFIG.JAVA.JAVAC_TOOL
         javac_worker = CONFIG.JAVA.JAVAC_WORKER
 
+        if not javac and not javac_worker:
+            fail('Either java.javac_tool or java.javac_worker must be set in the config')
+
         # Override old config if we have a toolchain configured
         if toolchain:
             javac = f'{toolchain}|javac'
