@@ -9,7 +9,7 @@ Name = java
 
 [PluginConfig "javac_tool"]
 ConfigKey = JavacTool
-DefaultValue = "javac"
+DefaultValue =
 Inherit = True
 
 [PluginConfig "javac_flags"]
@@ -70,6 +70,7 @@ Inherit = True
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
 JunitRunner = //tools/junit_runner
+JavacTool = "javac"
 
 [FeatureFlags]
 ExcludeJavaRules = true
