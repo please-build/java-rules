@@ -70,7 +70,6 @@ Inherit = True
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
 JunitRunner = //tools/junit_runner
-JavacTool = "javac"
 
 [FeatureFlags]
 ExcludeJavaRules = true
