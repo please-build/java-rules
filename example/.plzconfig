@@ -5,6 +5,7 @@ PreloadSubincludes = ///java//build_defs:java
 Target = //plugins:java
 Toolchain = //third_party/java:toolchain
 JunitRunner = //_please:junit_runner
+JavacTool = "javac"
 
 [FeatureFlags]
 ExcludeJavaRules = true
