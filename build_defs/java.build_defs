@@ -539,6 +539,16 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
             hashes = hashes,
         )
 
+    if CONFIG.OS == "linux" or CONFIG.OS == "darwin" or CONFIG.OS == "freebsd" or CONFIG.OS == "openbsd" or CONFIG.OS == "solaris":
+        java_platform = CONFIG.OS
+    elif CONFIG.OS == "windows":
+        java_platform = "win32"
+
+    include_root = join_path(subrepo_name(), package_name(), name, "include")
+    labels = ["cc:inc:" + include_root]
+    if java_platform:
+        labels += ["cc:inc:" + join_path(include_root, java_platform)]
+
     return build_rule(
         name = name,
         srcs = [jdk],
@@ -555,6 +565,7 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
             "java": f"{name}/bin/java",
             "javac": f"{name}/bin/javac",
         },
+        labels = labels,
         visibility = visibility,
     )
 
