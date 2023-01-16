@@ -1,4 +1,5 @@
 Version 0.2.5
+-------------
     * Expose JNI headers to dependents of `java_toolchain`
 
 Version 0.2.4
