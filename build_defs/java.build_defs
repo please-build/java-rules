@@ -273,7 +273,7 @@ def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, dep
         cmd=cmd,
         needs_transitive_deps=True,
         output_is_complete=True,
-        binary=True,
+        binary=self_executable,
         building_description="Creating jar...",
         requires=['java'],
         visibility=visibility,
