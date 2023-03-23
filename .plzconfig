@@ -1,5 +1,5 @@
 [Please]
-version = 16.20.0-beta.16
+version = 16.27.1
 
 [Parse]
 BlacklistDirs = example
@@ -70,6 +70,10 @@ Inherit = True
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
 JunitRunner = //tools/junit_runner
+
+[Plugin "e2e"]
+Target = //plugins:e2e
+PleaseVersion = 16.27.1
 
 [FeatureFlags]
 ExcludeJavaRules = true
