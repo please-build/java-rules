@@ -1,8 +1,16 @@
 [Please]
 version = 17.0.0-beta.6
 
-[Parse]
-BlacklistDirs = example
+[Plugin "java"]
+Toolchain = //third_party/java:toolchain
+JunitRunner = //tools/junit_runner
+
+[Plugin "e2e"]
+Target = //plugins:e2e
+PleaseVersion = 16.27.1
+
+[Plugin "shell"]
+Target = //plugins:shell
 
 [PluginDefinition]
 Name = java
@@ -61,14 +69,3 @@ DefaultValue = https://repo.maven.apache.org/maven2
 ConfigKey = Home
 Optional = true
 Inherit = True
-
-[Plugin "java"]
-Toolchain = //third_party/java:toolchain
-JunitRunner = //tools/junit_runner
-
-[Plugin "e2e"]
-Target = //plugins:e2e
-PleaseVersion = 16.27.1
-
-[FeatureFlags]
-ExcludeJavaRules = true
