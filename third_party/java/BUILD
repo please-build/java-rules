@@ -56,13 +56,6 @@ maven_jar(
 )
 
 maven_jar(
-    name = "javac_worker",
-    hashes = ["63010a359fbac75beeac5f15f25b0fd489f1af8f7673ff8d170cc062eb1c699f"],
-    id = "build.please:javac-worker:13.4.0",
-    deps = [":gson"],
-)
-
-maven_jar(
     name = "logback-classic",
     hash = "98c3f18f5d0d642cd5f327cc724566cd19649626c7d88f70143bd704c94157d5",
     id = "ch.qos.logback:logback-classic:1.1.3",

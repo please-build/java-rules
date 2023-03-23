@@ -1,5 +1,5 @@
 [Please]
-version = 16.20.0-beta.16
+version = 17.0.0-beta.6
 
 [Parse]
 BlacklistDirs = example
@@ -38,11 +38,6 @@ Inherit = True
 
 [PluginConfig "release_level"]
 ConfigKey = ReleaseLevel
-Optional = true
-Inherit = True
-
-[PluginConfig "javac_worker"]
-ConfigKey = JavacWorker
 Optional = true
 Inherit = True
 

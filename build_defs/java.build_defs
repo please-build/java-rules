@@ -28,7 +28,6 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
     """
     resources_cmd = 'true'
     if resources:
-        # TODO(jpoole): Check this actually matches the documented behaviour, as it's not clear it does
         if resources_root:
             resources_cmd = f'$(for SRC in $SRCS_RESOURCES; do DEST=${SRC#"{resources_root}"};mkdir -p $(dirname "_tmp/$DEST");cp "$SRC" "_tmp/$DEST"; done)'
         else:
@@ -40,7 +39,6 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
         if javac_flags:
             # See http://bazel.io/blog/2015/06/25/ErrorProne.html for more info about this flag;
             # it doesn't mean anything to us so we must filter it out.
-            # TODO(peterebden): Push this nonsense down into the javac_worker binary so we don't have to know about it here.
             javac_flags = ' '.join([flag for flag in javac_flags if flag != '-extra_checks:off'])
         else:
             javac_flags = CONFIG.JAVA.JAVAC_TEST_FLAGS if test_only else CONFIG.JAVA.JAVAC_FLAGS
@@ -56,28 +54,17 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
             javac_flags = f'-source {source_level} -target {target_level} ' + javac_flags
 
         javac = CONFIG.JAVA.JAVAC_TOOL
-        javac_worker = CONFIG.JAVA.JAVAC_WORKER
 
         # Override old config if we have a toolchain configured
         if toolchain:
             javac = f'{toolchain}|javac'
-            javac_worker = ''
 
-        if not javac and not javac_worker:
-            fail('Either java.javac_tool or java.javac_worker must be set in the config')
+        find = f'find "$TMP_DIR" -name "*.jar"'
+        if toolchain:
+            find += f' -not -path "$TMP_DIR/$(location {toolchain})/*"'
 
-        if not javac:
-            javac = CONFIG.JAVA.JAVAC_WORKER
-            mflag = '--modular' if modular else ''
-            srcflag = '--src_dir' if src_dir else ''
-            javac_cmd = f'$(worker {javac_worker}) {javac_flags} {mflag} {srcflag}'
-        else:
-            find = f'find "$TMP_DIR" -name "*.jar"'
-            if toolchain:
-                find += f' -not -path "$TMP_DIR/$(location {toolchain})/*"'
-
-            srcflag = '`find $SRCS_WORKER -name "*.java"`' if src_dir else '$SRCS_WORKER'
-            javac_cmd = f'mkdir -p _tmp/META-INF && "$TOOLS_JAVAC" {javac_flags} -classpath .:`{find} | tr \\\\\\\\n :` -d _tmp {srcflag}'
+        srcflag = '`find $SRCS_JAVAC -name "*.java"`' if src_dir else '$SRCS_JAVAC'
+        javac_cmd = f'mkdir -p _tmp/META-INF && "$TOOLS_JAVAC" {javac_flags} -classpath .:`{find} | tr \\\\\\\\n :` -d _tmp {srcflag}'
 
 
         cmd = ' && '.join([
@@ -95,7 +82,7 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
             srcs={
                 # To ensure we don't pass the resources to the compiler,
                 # this key has to match the magic constant in build_step.go
-                'WORKER': srcs or [src_dir],
+                'JAVAC': srcs or [src_dir],
                 'RESOURCES': resources,
             },
             deps=deps,
@@ -283,8 +270,7 @@ def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, dep
 
 
 def java_test(name:str, srcs:list, resources:list=None, resources_root:str=None,
-              data:list|dict=[], deps:list=None, worker:str='',
-              labels:list&features&tags=[], visibility:list=None, flags:str='',
+              data:list|dict=[], deps:list=None, labels:list&features&tags=[], visibility:list=None, flags:str='',
               sandbox:bool=None, timeout:int=0, flaky:bool|int=0, test_outputs:list=None, size:str=None,
               test_package:str=CONFIG.JAVA.DEFAULT_TEST_PACKAGE, jvm_args:str='', toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Defines a Java test.
@@ -298,7 +284,6 @@ def java_test(name:str, srcs:list, resources:list=None, resources_root:str=None,
                             the resources in the .jar will be in the subdirectory 'resources'.
       data (list): Runtime data files for this rule.
       deps (list): Dependencies of this rule.
-      worker (str): Reference to worker script, A persistent worker process that is used to set up the test.
       labels (list): Labels to attach to this test.
       visibility (list): Visibility declaration of this rule.
       flags (str): Flags to pass to the test invocation.
@@ -335,10 +320,6 @@ def java_test(name:str, srcs:list, resources:list=None, resources_root:str=None,
     test_cmd = f'$TOOLS_JAVA -Dbuild.please.testpackage={test_package} {jvm_args} -jar $(location :{name}) {flags}'
 
     deps = [lib_rule]
-    if worker:
-        test_cmd = f'$(worker {worker}) && {test_cmd} '
-        deps += [worker]
-
     return build_rule(
         name=name,
         cmd=cmd,
