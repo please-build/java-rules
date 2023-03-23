@@ -4,7 +4,7 @@ PreloadSubincludes = ///java//build_defs:java
 [Plugin "java"]
 Target = //plugins:java
 Toolchain = //third_party/java:toolchain
-JunitRunner = //_please:junit_runner
+JunitRunner = ///java//tools:junit_runner
 JavacTool = "javac"
 
 [FeatureFlags]

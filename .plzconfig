@@ -24,7 +24,7 @@ Inherit = True
 
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
-DefaultValue = /////_please:junit_runner
+DefaultValue = ///java//tools:junit_runner
 Inherit = True
 
 [PluginConfig "source_level"]
