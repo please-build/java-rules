@@ -66,5 +66,9 @@ Inherit = True
 Toolchain = //third_party/java:toolchain
 JunitRunner = //tools/junit_runner
 
+[Plugin "e2e"]
+Target = //plugins:e2e
+PleaseVersion = 16.27.1
+
 [FeatureFlags]
 ExcludeJavaRules = true
