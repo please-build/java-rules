@@ -1,4 +1,4 @@
-Version 0.2.5
+Version 0.3.0
 -------------
     * Remove the worker config ahead of v17
     * Use the new tools release to download the junit runner
