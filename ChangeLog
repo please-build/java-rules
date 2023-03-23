@@ -1,5 +1,10 @@
 Version 0.2.5
 -------------
+    * Remove the worker config ahead of v17
+    * Use the new tools release to download the junit runner
+
+Version 0.2.5
+-------------
     * Expose JNI headers to dependents of `java_toolchain`
 
 Version 0.2.4
