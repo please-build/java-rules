@@ -155,18 +155,6 @@ The release level of the project. Defaults to 8.
 ReleaseLevel = 15
 ```
 
-## JavacWorker
-If set, Please will use this javac worker rather than javac directly. This can speed up compile times as the javac 
-process can be reused between build actions.
-
-To start using the javac worker, add this config to your repo, where `java_rules` is the name of the plugin's 
-`github_repo()` rule:
-
-```
-[Plugin "java"]
-JavacWorker = @java_rules//tools:javac_worker
-```
-
 ## Toolchain
 If set, please will use the jdk provided by the `java_toolchain()` rule specified by this build label. See the toolchain 
 section above for more info.

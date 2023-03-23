@@ -5,9 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: ./pleasew test -e e2e
-      - run: ./pleasew test --repo_root example
-      - run: ./pleasew test -i e2e
+      - run: ./pleasew test
   release:
     needs: [test]
     runs-on: ubuntu-latest

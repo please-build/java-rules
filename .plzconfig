@@ -1,8 +1,16 @@
 [Please]
-version = 16.27.1
+version = 17.0.0-beta.6
 
-[Parse]
-BlacklistDirs = example
+[Plugin "java"]
+Toolchain = //third_party/java:toolchain
+JunitRunner = //tools/junit_runner
+
+[Plugin "e2e"]
+Target = //plugins:e2e
+PleaseVersion = 16.27.1
+
+[Plugin "shell"]
+Target = //plugins:shell
 
 [PluginDefinition]
 Name = java
@@ -24,7 +32,7 @@ Inherit = True
 
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
-DefaultValue = /////_please:junit_runner
+DefaultValue = ///java//tools:junit_runner
 Inherit = True
 
 [PluginConfig "source_level"]
@@ -38,11 +46,6 @@ Inherit = True
 
 [PluginConfig "release_level"]
 ConfigKey = ReleaseLevel
-Optional = true
-Inherit = True
-
-[PluginConfig "javac_worker"]
-ConfigKey = JavacWorker
 Optional = true
 Inherit = True
 
@@ -66,14 +69,3 @@ DefaultValue = https://repo.maven.apache.org/maven2
 ConfigKey = Home
 Optional = true
 Inherit = True
-
-[Plugin "java"]
-Toolchain = //third_party/java:toolchain
-JunitRunner = //tools/junit_runner
-
-[Plugin "e2e"]
-Target = //plugins:e2e
-PleaseVersion = 16.27.1
-
-[FeatureFlags]
-ExcludeJavaRules = true

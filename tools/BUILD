@@ -1,7 +1,8 @@
-# TODO(jpoole): This should be a remove file on the plugin repo's release page and we should remove //_please:javac_worker
-filegroup(
-    name = "javac_worker",
-    srcs = ["@//_please:javac_worker"],
+TOOLS_VERSION = "1.0.0"
+
+remote_file(
+    name = "junit_runner",
+    url = f"https://github.com/please-build/java-rules/releases/download/tools-v{TOOLS_VERSION}/junit_runner.jar",
+    hashes = ["6d9afc4054419fe08677feed093d5cbd7e4098d68d59087e34c2bd3e4a52c4d6"],
     visibility = ["PUBLIC"],
-    labels = ["hlink:plz-out/package"]
 )
