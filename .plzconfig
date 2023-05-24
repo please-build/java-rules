@@ -19,53 +19,64 @@ Name = java
 ConfigKey = JavacTool
 DefaultValue =
 Inherit = True
+Help = Path to the Javac tool if not using java_toolchain
 
 [PluginConfig "javac_flags"]
 ConfigKey = JavacFlags
 Optional = True
 Inherit = True
+Help = Any additional flags to pass to javac
 
 [PluginConfig "javac_test_flags"]
 ConfigKey = JavacTestFlags
 Optional = True
 Inherit = True
+Help = Any additional flags to pass to javac for tests
 
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
 DefaultValue = ///java//tools:junit_runner
 Inherit = True
+Help = The pass or build label for the junit test runner, a tool that runs .jar files containing junit tests
 
 [PluginConfig "source_level"]
 ConfigKey = SourceLevel
 DefaultValue = 8
+Help = The source level to use
 
 [PluginConfig "target_level"]
 ConfigKey = TargetLevel
 DefaultValue = 8
 Inherit = True
+Help = The target byte code language level
 
 [PluginConfig "release_level"]
 ConfigKey = ReleaseLevel
 Optional = true
 Inherit = True
+Help = The release byte code level
 
 [PluginConfig "toolchain"]
 ConfigKey = Toolchain
 Optional = true
 Inherit = True
+Help = The build label for the java_toolchain rule. Use this instead of Javac.
 
 [PluginConfig "default_test_package"]
 ConfigKey = DefaultTestPackage
 Optional = true
 Inherit = True
+Help = The default package to find the test entry point in
 
 [PluginConfig "maven_repo"]
 ConfigKey = MavenRepo
 Repeatable = true
 DefaultValue = https://repo1.maven.org/maven2
 DefaultValue = https://repo.maven.apache.org/maven2
+Help = The maven repo to use for maven_jar
 
 [PluginConfig "home"]
 ConfigKey = Home
 Optional = true
+Help = Sets the java home variable 
 Inherit = True
