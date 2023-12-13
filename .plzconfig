@@ -33,6 +33,12 @@ Optional = True
 Inherit = True
 Help = Any additional flags to pass to javac for tests
 
+[PluginConfig "jlink_tool"]
+ConfigKey = JlinkTool
+DefaultValue = jlink
+Inherit = True
+Help = Path to the jlink tool
+
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
 DefaultValue = ///java//tools:junit_runner
