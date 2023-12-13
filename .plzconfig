@@ -17,7 +17,7 @@ Name = java
 
 [PluginConfig "javac_tool"]
 ConfigKey = JavacTool
-DefaultValue =
+DefaultValue = javac
 Inherit = True
 Help = Path to the Javac tool if not using java_toolchain
 
