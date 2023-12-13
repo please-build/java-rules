@@ -210,7 +210,7 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
         building_description="Creating runtime image...",
         requires=['java'],
         visibility=visibility,
-        tools=[CONFIG.JLINK_TOOL],
+        tools=[CONFIG.JAVA.JLINK_TOOL],
     )
 
 def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, deps:list=[],
