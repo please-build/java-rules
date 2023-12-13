@@ -212,7 +212,7 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
     out = out or name
     depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
     modules = ','.join(modules)
-    cmd = f"$TOOLS_JLINK --module-path {depflags}:{home}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out} {jlink_args}",
+    cmd = f"$TOOLS_JLINK --module-path {depflags}:{home}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out} {jlink_args}"
 
     return build_rule(
         name=name,
