@@ -46,7 +46,7 @@ Help = Any additional flags to pass to javac for tests
 ConfigKey = JlinkTool
 DefaultValue = jlink
 Inherit = True
-Help = Path to the jlink tool
+Help = Path to the jlink tool if not using java_toolchain
 
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
