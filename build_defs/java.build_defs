@@ -174,7 +174,8 @@ def java_module(name:str, srcs:list=None, src_dir:str=None, resources:list=None,
 
 def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, out:str=None,
                        deps:list=[], data:list=None, visibility:list=None,
-                       jlink_args:str='--strip-debug --compress=2'):
+                       jlink_args:str='--strip-debug --compress=2',
+                       toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Assembles a set of modules into an executable java runtime image.
 
     Args:
@@ -187,17 +188,31 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
       data (list): Deprecated, has no effect.
       visibility (list): Visibility declaration of this rule.
       jlink_args (str): Arguments to pass to the JVM in the run script.
+      toolchain (str): The build target for a java_toolchain that will be used to build this image. If a toolchain is
+                       not defined, this rule falls back to using the jlink tool defined in the plugin configuration.
     """
-    if not CONFIG.JAVA.HOME:
-        fail('Java home needs to be set to link java runtime images against jmods.')
-    if not CONFIG.JAVA.JLINK_TOOL:
-        fail('A jlink tool is required to build java runtime images.')
+    if toolchain:
+        home = "$TOOLS_TOOLCHAIN"
+        tools = {
+            "jlink": f"{toolchain}|jlink",
+            "toolchain": toolchain,
+        }
+    else:
+        if not CONFIG.JAVA.HOME:
+            fail("JAVA_HOME needs to be set to link Java runtime images against jmods.")
+        if not CONFIG.JAVA.JLINK_TOOL:
+            fail("A jlink tool is required to build Java runtime images.")
+        home = CONFIG.JAVA.HOME
+        tools = {
+            "jlink": CONFIG.JAVA.JLINK_TOOL,
+        }
+
     if not modules:
-        fail('You cannot assemble a java runtime image without specifying any modules.')
+        fail("You cannot assemble a Java runtime image without specifying any modules.")
     out = out or name
     depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
     modules = ','.join(modules)
-    cmd = f"$TOOL --module-path {depflags}:{CONFIG.JAVA.HOME}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out} {jlink_args}"
+    cmd = f"$TOOLS_JLINK --module-path {depflags}:{home}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out} {jlink_args}",
 
     return build_rule(
         name=name,
@@ -210,11 +225,11 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
         building_description="Creating runtime image...",
         requires=['java'],
         visibility=visibility,
-        tools=[CONFIG.JAVA.JLINK_TOOL],
+        tools=tools,
     )
 
 def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, deps:list=[],
-                data:list=None, visibility:list=None, jvm_args:str=None, labels:list=[],
+                data:list=[], visibility:list=None, jvm_args:str=None, labels:list=[],
                 self_executable:bool=True, manifest:str=None, toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Compiles a .jar from a set of Java libraries.
 
@@ -231,7 +246,7 @@ def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, dep
       self_executable (bool): True to make the jar self executable.
       manifest (str): Manifest file to put into the jar. Can't be passed at the same time as
                       main_class.
-      toolchain (str): A label identifying a java_toolchain rule which will be used to build this java binary.
+      toolchain (str): A label identifying a java_toolchain rule which will be used to build this Java binary.
     """
     if main_class and manifest:
         fail("Can't pass both main_class and manifest to java_binary")
@@ -245,7 +260,15 @@ def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, dep
         deps += [lib_rule]
     # TODO(jpoole): Remove self exec flag and do this always once JavaBinaryExecutableByDefault has been merged
     if self_executable:
-        preamble = '#!/bin/sh\nexec java %s -jar $0 ${@}' % (jvm_args or '')
+        if CONFIG.JAVA.RUN_SELF_EXECUTABLES_WITH_JAVA_TOOL:
+            if toolchain:
+                java = f"$(out_location {toolchain}|java)"
+                data += [f"{toolchain}|java"]
+            else:
+                java = CONFIG.JAVA.JAVA_TOOL
+        else:
+            java = "java"
+        preamble = "#!/bin/sh\nexec %s %s -jar $0 ${@}" % (java, (jvm_args or ""))
         cmd, tools = _jarcat_cmd(main_class, preamble, manifest=manifest)
     else:
         # This is essentially a hack to get past some Java things (notably Jersey) failing
@@ -314,7 +337,7 @@ def java_test(name:str, srcs:list, resources:list=None, resources_root:str=None,
     if toolchain:
         java = f'{toolchain}|java'
     else:
-        java = 'java'
+        java = CONFIG.JAVA.JAVA_TOOL
 
     cmd = 'ln -s "$(if [ -f "$TOOLS_JUNIT" ]; then echo "$TOOLS_JUNIT"; else echo "$(which "$TOOLS_JUNIT")"; fi)" . && ' + cmd
     test_cmd = f'$TOOLS_JAVA -Dbuild.please.testpackage={test_package} {jvm_args} -jar $(location :{name}) {flags}'
@@ -545,6 +568,7 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
         entry_points = {
             "java": f"{name}/bin/java",
             "javac": f"{name}/bin/javac",
+            "jlink": f"{name}/bin/jlink",
         },
         labels = labels,
         visibility = visibility,
