@@ -192,6 +192,8 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
                        not defined, this rule falls back to using the jlink tool defined in the plugin configuration.
     """
     if toolchain:
+        if not get_entry_points(toolchain).get("jlink"):
+            fail("%s: this Java toolchain does not provide jlink" % canonicalise(toolchain))
         home = "$TOOLS_TOOLCHAIN"
         tools = {
             "jlink": f"{toolchain}|jlink",
@@ -553,6 +555,22 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
     if java_platform:
         labels += ["cc:inc:" + join_path(include_root, java_platform)]
 
+    # The jlink binary was added to the JDK in Java 9, as part of the module system - it can only be
+    # added as an entry point if we detect that the toolchain will provide Java >= 9.
+    def _add_jlink_entry_point(name, output):
+        # The output of "java -fullversion" is standardised in JEP 223, and matches the format
+        # expected below going back at least as far as Java 8.
+        if len(output) == 0 or not output[0].startswith("openjdk full version "):
+            fail("bin/java in the Java toolchain does not appear to be the JRE binary")
+        version = output[0].removeprefix('openjdk full version "').removesuffix('"')
+        major, minor, _ = version.split(".")
+        # Java 9 and below (i.e. versions that don't fully implement JEP 223) identify themselves as
+        # version "1.w.x.y.z" rather than "w.x.y.z":
+        if major == "1":
+            major = minor
+        if int(major) >= 9:
+            add_entry_point(name, "jlink", f"{name}/bin/jlink")
+
     return build_rule(
         name = name,
         srcs = [jdk],
@@ -562,15 +580,16 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
             '"$TOOL" x $SRCS -o extract_dir',
             f'mv $(dirname $(dirname $(find extract_dir/ -name javac))) {name}',
             f"chmod +x {name}/bin/*",
+            f"{name}/bin/java -fullversion 2>&1",
         ]),
         binary = True,
         building_description = 'Extracting...',
         entry_points = {
             "java": f"{name}/bin/java",
             "javac": f"{name}/bin/javac",
-            "jlink": f"{name}/bin/jlink",
         },
         labels = labels,
+        post_build = _add_jlink_entry_point,
         visibility = visibility,
     )
 
