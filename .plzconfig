@@ -9,9 +9,6 @@ JunitRunner = //tools/junit_runner
 Target = //plugins:e2e
 PleaseVersion = 16.27.1
 
-[Plugin "shell"]
-Target = //plugins:shell
-
 [PluginDefinition]
 Name = java
 
