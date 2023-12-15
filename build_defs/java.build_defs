@@ -558,16 +558,24 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
     # The jlink binary was added to the JDK in Java 9, as part of the module system - it can only be
     # added as an entry point if we detect that the toolchain will provide Java >= 9.
     def _add_jlink_entry_point(name, output):
-        # The output of "java -fullversion" is standardised in JEP 223, and matches the format
-        # expected below going back at least as far as Java 8.
+        # The output of "java -fullversion" matches the format expected below going back at least as
+        # far as Java 8.
         if len(output) == 0 or not output[0].startswith("openjdk full version "):
             fail("bin/java in the Java toolchain does not appear to be the JRE binary")
         version = output[0].removeprefix('openjdk full version "').removesuffix('"')
-        major, minor, _ = version.split(".")
-        # Java 9 and below (i.e. versions that don't fully implement JEP 223) identify themselves as
-        # version "1.w.x.y.z" rather than "w.x.y.z":
-        if major == "1":
-            major = minor
+        # "java -fullversion" outputs the value of the java.runtime.version JVM system property,
+        # whose format has changed through the ages:
+        if version.startswith("1."):
+            # Java <= 8: JDK version numbers always have an initial "1" component, the (de facto)
+            # major version number is second, and the third is always "0". Everything that follows
+            # this is irrelevant here.
+            _, major, _ = version.split(".")
+        else:
+            # Java >= 9: java.runtime.version is the value of $VSTR, defined in JEP 223. We just
+            # want the value of $MAJOR, the first component of $VNUM.
+            vnum_pre, _, _ = version.partition("+")
+            vnum, _, _ = vnum_pre.partition("-")
+            major, _, _ = vnum.partition(".")
         if int(major) >= 9:
             add_entry_point(name, "jlink", f"{name}/bin/jlink")
 
