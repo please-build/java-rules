@@ -1,5 +1,5 @@
 [Please]
-version = 17.0.0-beta.6
+version = 17.4.0-beta.10
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
@@ -11,6 +11,18 @@ PleaseVersion = 16.27.1
 
 [PluginDefinition]
 Name = java
+
+[PluginConfig "java_tool"]
+ConfigKey = JavaTool
+DefaultValue = java
+Inherit = True
+Help = Path to the Java tool if not using java_toolchain
+
+[PluginConfig "run_self_executables_with_java_tool"]
+ConfigKey = RunSelfExecutablesWithJavaTool
+DefaultValue = False
+Inherit = True
+Help = Run self-executable JAR files outputted by this plugin's rules with the Java tool (whether standalone or from a java_toolchain); otherwise, they will be run using the "java" binary in the system path. If this is enabled, JAR files may not be self-executable if they are moved, although they will still be runnable with "java -jar".
 
 [PluginConfig "javac_tool"]
 ConfigKey = JavacTool
@@ -34,7 +46,7 @@ Help = Any additional flags to pass to javac for tests
 ConfigKey = JlinkTool
 DefaultValue = jlink
 Inherit = True
-Help = Path to the jlink tool
+Help = Path to the jlink tool if not using java_toolchain
 
 [PluginConfig "junit_runner"]
 ConfigKey = JunitRunner
