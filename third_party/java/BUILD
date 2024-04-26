@@ -2,15 +2,17 @@ subinclude("//build_defs:java")
 
 package(default_visibility = ["PUBLIC"])
 
+_corretto_version = "11.0.23.9.1"
+
 java_toolchain(
     name = "toolchain",
     hashes = [
-        "dbbf98ca93b44a0c81df5a3a4f2cebf467ec5c30e28c359e26615ffbed0b454f",
-        "f1d2d566c189075c5e543076df61b452f830d8893bbc49b6fb2057070ff97818",
+        "008fae961dfd0df99cbc888a0279561458fe830797646234efe7daed8e512040", # linux
+        "da2bd4fd790efce6a75eb81180734806dc5dd6d050da02242d9f8017ccaafaa1", # macosx
     ],
     jdk_url = {
-        "linux": "https://corretto.aws/downloads/resources/11.0.8.10.1/amazon-corretto-11.0.8.10.1-linux-x64.tar.gz",
-        "darwin": "https://corretto.aws/downloads/resources/11.0.8.10.1/amazon-corretto-11.0.8.10.1-macosx-x64.tar.gz",
+        "linux": f"https://corretto.aws/downloads/resources/{_corretto_version}/amazon-corretto-{_corretto_version}-linux-x64.tar.gz",
+        "darwin": f"https://corretto.aws/downloads/resources/{_corretto_version}/amazon-corretto-{_corretto_version}-macosx-x64.tar.gz",
     },
 )
 
