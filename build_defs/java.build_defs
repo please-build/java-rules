@@ -529,7 +529,8 @@ def _jarcat_cmd(main_class=None, preamble=None, manifest=None):
 
 # This function is exposed as java_toolchain unless Bazel compatibility is enabled in which case it is exposed as
 # please_java_toolchain. This is to avoid namespace conflicts with Bazel's java_toolchain rule.
-def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:list = ["PUBLIC"], hashes = []) -> str:
+def _java_toolchain(name:str, jdk_url:str|dict="", jdk:str="", hashes:list=[], jmod_includes:dict={},
+                    visibility:list=["PUBLIC"]) -> str:
     """Downloads the JDK so language rules can use the toolchain"""
     if jdk_url and jdk:
         fail("Either jdk or jdk_url should be provided but not both")
@@ -581,19 +582,51 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
         if int(major) >= 9:
             add_entry_point(name, "jlink", f"{name}/bin/jlink")
 
-    return build_rule(
+    srcs = {
+        "jdk": [jdk],
+    }
+    cmd = [
+        '"$TOOL" x $SRCS_JDK -o extract_dir',
+        "mv $(dirname $(dirname $(find extract_dir/ -name javac))) $OUTS",
+        "chmod +x $OUTS/bin/*",
+    ]
+
+    if jmod_includes:
+        srcs["jmod_includes"] = []
+        cmd += ["mkdir -p _jmods"]
+        for module, includes in jmod_includes.items():
+            srcs["jmod_includes"] += includes.values()
+            cmd += [f"$OUTS/bin/jmod extract --dir _jmods/{module} $OUTS/jmods/{module}.jmod"]
+            for fdest, fsrc in includes.items():
+                fsrc = f"$(location {fsrc})" if looks_like_build_label(fsrc) else fsrc
+                cmd += [f"cp -a {fsrc} _jmods/{module}/{fdest}"]
+            cmd += [
+                f"rm -f $OUTS/jmods/{module}.jmod",
+                # jlink will exit unsuccessfully if any of the directories given in the options are missing,
+                # but is fine with them being empty:
+                f"for dir in classes bin conf include legal lib man; do mkdir -p _jmods/{module}/$dir; done",
+                "$OUTS/bin/jmod create " + " ".join([
+                    f"--class-path _jmods/{module}/classes",
+                    f"--cmds _jmods/{module}/bin",
+                    f"--config _jmods/{module}/conf",
+                    f"--header-files _jmods/{module}/include",
+                    f"--legal-notices _jmods/{module}/legal",
+                    f"--libs _jmods/{module}/lib",
+                    f"--man-pages _jmods/{module}/man",
+                ]) + f" $OUTS/jmods/{module}.jmod",
+                # Some JMOD archives in the JDK are large when extracted, so clean them up as we go along:
+                f"rm -rf _jmods/{module}",
+            ]
+
+    return genrule(
         name = name,
-        srcs = [jdk],
+        srcs = srcs,
         outs = [name],
-        tools = [CONFIG.JARCAT_TOOL],
-        cmd = " && ".join([
-            '"$TOOL" x $SRCS -o extract_dir',
-            f'mv $(dirname $(dirname $(find extract_dir/ -name javac))) {name}',
-            f"chmod +x {name}/bin/*",
-            f"{name}/bin/java -fullversion 2>&1",
-        ]),
         binary = True,
-        building_description = 'Extracting...',
+        cmd = cmd + [
+            "$OUTS/bin/java -fullversion 2>&1",
+        ],
+        tools = [CONFIG.JARCAT_TOOL],
         entry_points = {
             "java": f"{name}/bin/java",
             "javac": f"{name}/bin/javac",
@@ -605,7 +638,8 @@ def _java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:li
 
 please_java_toolchain = _java_toolchain
 
-def java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:list = ["PUBLIC"], hashes : list = []):
+def java_toolchain(name:str, jdk_url:str|dict="", jdk:str="", hashes:list=[], jmod_includes:dict={},
+                   visibility:list=["PUBLIC"]):
     """This is an experimental feature and is subject to breaking changes in minor releases.
 
     Defines a toolchain that downloads a JDK that can be used with java languages rules. This can be configured in your
@@ -619,15 +653,20 @@ def java_toolchain(name : str, jdk_url : str|dict='', jdk:str='', visibility:lis
       jdk_url (str): A URL to an archive containing a JDK distribution. Either this or jdk should be provided.
       jdk (str): An archive of a jdk distribution or a label of a rule that produces one. Either this or jdk_url should
                  be provided.
-      visibility (list[str]): Visibility of this rule. Defaults to PUBLIC.
       hashes (list[str]): A list of valid hashes for the produced rule.
+      jmod_includes (dict[dict[str, str]]): Additional files to insert into the JDK's JMOD archive files in the jmod/
+                                            directory. Keys are the names of archives without the .jmod extension (e.g.
+                                            "java.base"), and values are dicts mapping paths within the archive to the
+                                            files or build targets that provide them.
+      visibility (list[str]): Visibility of this rule. Defaults to PUBLIC.
     """
     return _java_toolchain(
         name = name,
         jdk_url = jdk_url,
         jdk = jdk,
-        visibility = visibility,
         hashes = hashes,
+        jmod_includes = jmod_includes,
+        visibility = visibility,
     )
 
 if CONFIG.BAZEL_COMPATIBILITY:
