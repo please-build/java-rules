@@ -173,8 +173,8 @@ def java_module(name:str, srcs:list=None, src_dir:str=None, resources:list=None,
 
 
 def java_runtime_image(name:str, out:str=None, main_module:str, main_class:str, modules:list, compression:int=2,
-                       jlink_args:str="", data:list=None, toolchain:str=CONFIG.JAVA.TOOLCHAIN,
-                       visibility:list=None, deps:list=[]):
+                       strip_hdrs:bool=True, strip_man_pages:bool=True, jlink_args:str="", data:list=None,
+                       toolchain:str=CONFIG.JAVA.TOOLCHAIN, visibility:list=None, deps:list=[]):
     """Assembles a set of modules into an executable java runtime image.
 
     Args:
@@ -185,6 +185,9 @@ def java_runtime_image(name:str, out:str=None, main_module:str, main_class:str, 
       modules (list): Modules to be included in the runtime image.
       compression (int): the compression method to apply to resources. Refer to the jlink documentation for --compress
                          for permitted values. Defaults to 2 (zip).
+      strip_hdrs (bool): Strip header files from runtime image. Defaults to True, since they are usually not needed at
+                         run time.
+      strip_man_pages (bool): Strip man pages from runtime image. Defaults to True.
       jlink_args (str): Additional arguments to pass to jlink.
       data (list): Deprecated, has no effect.
       toolchain (str): The build target for a java_toolchain that will be used to build this image. If a toolchain is
@@ -215,21 +218,25 @@ def java_runtime_image(name:str, out:str=None, main_module:str, main_class:str, 
     out = out or name
     depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
     modules = ','.join(modules)
-    cmd = "$TOOLS_JLINK " + " ".join([
+    default_jlink_args = [
         f"--module-path {depflags}:{home}/jmods",
         f"--add-modules {modules}",
         f"--launcher {name}={main_module}/{main_class}",
         f"--compress {compression}",
         f"--output {out}",
-    ])
+    ]
+    if strip_hdrs:
+        default_jlink_args += ["--no-header-files"]
+    if strip_man_pages:
+        default_jlink_args += ["--no-man-pages"]
 
     return build_rule(
         name=name,
         deps=deps,
         outs=[out],
         cmd={
-            "dbg": f"{cmd} {jlink_args}",
-            "opt": f"{cmd} --strip-debug {jlink_args}",
+            "dbg": f"$TOOLS_JLINK " + " ".join(default_jlink_args) + " {jlink_args}",
+            "opt": f"$TOOLS_JLINK " + " ".join(default_jlink_args) + " --strip-debug {jlink_args}",
         },
         needs_transitive_deps=True,
         output_is_complete=True,
