@@ -174,8 +174,7 @@ def java_module(name:str, srcs:list=None, src_dir:str=None, resources:list=None,
 
 def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, out:str=None,
                        deps:list=[], data:list=None, visibility:list=None,
-                       jlink_args:str='--strip-debug --compress=2',
-                       toolchain:str=CONFIG.JAVA.TOOLCHAIN):
+                       jlink_args:str='--compress=2', toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Assembles a set of modules into an executable java runtime image.
 
     Args:
@@ -214,13 +213,16 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
     out = out or name
     depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
     modules = ','.join(modules)
-    cmd = f"$TOOLS_JLINK --module-path {depflags}:{home}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out} {jlink_args}"
+    cmd = f"$TOOLS_JLINK --module-path {depflags}:{home}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out}"
 
     return build_rule(
         name=name,
         deps=deps,
         outs=[out],
-        cmd=cmd,
+        cmd={
+            "dbg": f"{cmd} {jlink_args}",
+            "opt": f"{cmd} --strip-debug {jlink_args}",
+        },
         needs_transitive_deps=True,
         output_is_complete=True,
         binary=True,
