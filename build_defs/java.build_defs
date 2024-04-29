@@ -172,23 +172,25 @@ def java_module(name:str, srcs:list=None, src_dir:str=None, resources:list=None,
     )
 
 
-def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, out:str=None,
-                       deps:list=[], data:list=None, visibility:list=None,
-                       jlink_args:str='--compress=2', toolchain:str=CONFIG.JAVA.TOOLCHAIN):
+def java_runtime_image(name:str, out:str=None, main_module:str, main_class:str, modules:list, compression:int=2,
+                       jlink_args:str="", data:list=None, toolchain:str=CONFIG.JAVA.TOOLCHAIN,
+                       visibility:list=None, deps:list=[]):
     """Assembles a set of modules into an executable java runtime image.
 
     Args:
       name (str): Name of the rule.
+      out (str): Name of the folder that contains the runtime image and the binary contained by it. Defaults to 'name'.
       main_module (str): Main module to set in the manifest. Has to be included in 'modules'.
       main_class (str): Main class to set in the manifest. Has to belong to 'main_module'.
       modules (list): Modules to be included in the runtime image.
-      out (str): Name of the folder that contains the runtime image and the binary contained by it. Defaults to 'name'.
-      deps (list): Dependencies of this rule.
+      compression (int): the compression method to apply to resources. Refer to the jlink documentation for --compress
+                         for permitted values. Defaults to 2 (zip).
+      jlink_args (str): Additional arguments to pass to jlink.
       data (list): Deprecated, has no effect.
-      visibility (list): Visibility declaration of this rule.
-      jlink_args (str): Arguments to pass to the JVM in the run script.
       toolchain (str): The build target for a java_toolchain that will be used to build this image. If a toolchain is
                        not defined, this rule falls back to using the jlink tool defined in the plugin configuration.
+      visibility (list): Visibility declaration of this rule.
+      deps (list): Dependencies of this rule.
     """
     if toolchain:
         if not get_entry_points(toolchain).get("jlink"):
@@ -213,7 +215,13 @@ def java_runtime_image(name:str, main_module:str, main_class:str, modules:list, 
     out = out or name
     depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
     modules = ','.join(modules)
-    cmd = f"$TOOLS_JLINK --module-path {depflags}:{home}/jmods --add-modules {modules} --launcher {name}={main_module}/{main_class} --output {out}"
+    cmd = "$TOOLS_JLINK " + " ".join([
+        f"--module-path {depflags}:{home}/jmods",
+        f"--add-modules {modules}",
+        f"--launcher {name}={main_module}/{main_class}",
+        f"--compress {compression}",
+        f"--output {out}",
+    ])
 
     return build_rule(
         name=name,
