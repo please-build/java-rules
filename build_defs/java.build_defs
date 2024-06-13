@@ -172,17 +172,20 @@ def java_module(name:str, srcs:list=None, src_dir:str=None, resources:list=None,
     )
 
 
-def java_runtime_image(name:str, out:str=None, main_module:str, main_class:str, modules:list, compression:int=2,
-                       strip_hdrs:bool=True, strip_man_pages:bool=True, jlink_args:str="", data:list=None,
+def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str&main_module=None,
+                       launcher_class:str&main_class=None, compression:int=2, strip_hdrs:bool=True,
+                       strip_man_pages:bool=True, jlink_args:str="", data:list=None,
                        toolchain:str=CONFIG.JAVA.TOOLCHAIN, visibility:list=None, deps:list=[]):
     """Assembles a set of modules into an executable java runtime image.
 
     Args:
       name (str): Name of the rule.
       out (str): Name of the folder that contains the runtime image and the binary contained by it. Defaults to 'name'.
-      main_module (str): Main module to set in the manifest. Has to be included in 'modules'.
-      main_class (str): Main class to set in the manifest. Has to belong to 'main_module'.
       modules (list): Modules to be included in the runtime image.
+      launcher_module (str): The module to run in the launcher script. Has to be included in 'modules'. If omitted, no
+                             launcher script will be created.
+      launcher_class (str): The class within 'launcher_module' to run in the launcher script. Must be specified if
+                            'launcher_module' is specified.
       compression (int): the compression method to apply to resources. Refer to the jlink documentation for --compress
                          for permitted values. Defaults to 2 (zip).
       strip_hdrs (bool): Strip header files from runtime image. Defaults to True, since they are usually not needed at
@@ -215,16 +218,19 @@ def java_runtime_image(name:str, out:str=None, main_module:str, main_class:str, 
 
     if not modules:
         fail("You cannot assemble a Java runtime image without specifying any modules.")
+    if (launcher_module and not launcher_class) or (launcher_class and not launcher_module):
+        fail("launcher_module and launcher_class must be defined together - they cannot be defined individually.")
     out = out or name
     depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
     modules = ','.join(modules)
     default_jlink_args = [
         f"--module-path {depflags}:{home}/jmods",
         f"--add-modules {modules}",
-        f"--launcher {name}={main_module}/{main_class}",
         f"--compress {compression}",
         f"--output {out}",
     ]
+    if launcher_module and launcher_class:
+        default_jlink_args += [f"--launcher {name}={launcher_module}/{launcher_class}"]
     if strip_hdrs:
         default_jlink_args += ["--no-header-files"]
     if strip_man_pages:
