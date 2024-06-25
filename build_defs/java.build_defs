@@ -199,8 +199,6 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
       deps (list): Dependencies of this rule.
     """
     if toolchain:
-        if not get_entry_points(toolchain).get("jlink"):
-            fail("%s: this Java toolchain does not provide jlink" % canonicalise(toolchain))
         home = "$TOOLS_TOOLCHAIN"
         tools = {
             "jlink": f"{toolchain}|jlink",
