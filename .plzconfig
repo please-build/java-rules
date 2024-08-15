@@ -1,5 +1,5 @@
 [Please]
-version = >=17.4.0
+version = >=17.10.1
 
 [Plugin "java"]
 Toolchain = //third_party/java:toolchain
