@@ -45,6 +45,8 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
                 javac_flags = CONFIG.JAVA.JAVAC_TEST_FLAGS
             elif CONFIG.JAVA.JAVAC_FLAGS is not None:
                 javac_flags = CONFIG.JAVA.JAVAC_FLAGS
+            else:
+                javac_flags = ""
 
         javac_flags = '-g -encoding utf8 ' + javac_flags
 
