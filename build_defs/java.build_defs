@@ -41,7 +41,10 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
             # it doesn't mean anything to us so we must filter it out.
             javac_flags = ' '.join([flag for flag in javac_flags if flag != '-extra_checks:off'])
         else:
-            javac_flags = CONFIG.JAVA.JAVAC_TEST_FLAGS if test_only else CONFIG.JAVA.JAVAC_FLAGS
+            if test_only and CONFIG.JAVA.JAVAC_TEST_FLAGS is not None:
+                javac_flags = CONFIG.JAVA.JAVAC_TEST_FLAGS
+            elif CONFIG.JAVA.JAVAC_FLAGS is not None:
+                javac_flags = CONFIG.JAVA.JAVAC_FLAGS
 
         javac_flags = '-g -encoding utf8 ' + javac_flags
 
@@ -205,9 +208,9 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
             "toolchain": toolchain,
         }
     else:
-        if not CONFIG.JAVA.HOME:
+        if CONFIG.JAVA.HOME is None:
             fail("JAVA_HOME needs to be set to link Java runtime images against jmods.")
-        if not CONFIG.JAVA.JLINK_TOOL:
+        if CONFIG.JAVA.JLINK_TOOL is None:
             fail("A jlink tool is required to build Java runtime images.")
         home = CONFIG.JAVA.HOME
         tools = {
@@ -362,8 +365,10 @@ def java_test(name:str, srcs:list, resources:list=None, resources_root:str=None,
     else:
         java = CONFIG.JAVA.JAVA_TOOL
 
+    test_package_arg = "-Dbuild.please.testpackage={test_package}" if test_package is not None else ""
+
     cmd = 'ln -s "$(if [ -f "$TOOLS_JUNIT" ]; then echo "$TOOLS_JUNIT"; else echo "$(which "$TOOLS_JUNIT")"; fi)" . && ' + cmd
-    test_cmd = f'$TOOLS_JAVA -Dbuild.please.testpackage={test_package} {jvm_args} -jar $(location :{name}) {flags}'
+    test_cmd = f"$TOOLS_JAVA {test_package_arg} {jvm_args} -jar $(location :{name}) {flags}"
 
     deps = [lib_rule]
     return build_rule(
