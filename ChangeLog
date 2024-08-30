@@ -1,3 +1,7 @@
+Version 0.4.2
+-------------
+    * In `java_library`, only stringify `javac_flags` when needed (#45)
+
 Version 0.4.1
 -------------
     * In the build definitions, guard against optional plugin configuration fields having `None`
