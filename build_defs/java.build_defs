@@ -35,6 +35,7 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
 
     if srcs and src_dir:
         fail('You cannot pass both srcs and src_dir to java_library')
+    javac_flags = javac_flags or []
     if srcs or src_dir:
         if javac_flags:
             # See http://bazel.io/blog/2015/06/25/ErrorProne.html for more info about this flag;
