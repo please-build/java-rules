@@ -2,7 +2,7 @@
 
 def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], resources_root:str=None,
                  deps:list=[], modular:bool=False, exported_deps:list=None, visibility:list=None,
-                 test_only:bool&testonly=False, javac_flags:list&javacopts=None, labels:list=[],
+                 test_only:bool&testonly=False, javac_flags:list&javacopts=[], labels:list=[],
                  toolchain:str=CONFIG.JAVA.TOOLCHAIN):
     """Compiles Java source to a .jar which can be collected by other rules.
 
@@ -39,24 +39,22 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
         if javac_flags:
             # See http://bazel.io/blog/2015/06/25/ErrorProne.html for more info about this flag;
             # it doesn't mean anything to us so we must filter it out.
-            javac_flags = ' '.join([flag for flag in javac_flags if flag != '-extra_checks:off'])
+            javac_flags = filter(lambda flag: flag != "-extra_checks:off", javac_flags)
         else:
             if test_only and CONFIG.JAVA.JAVAC_TEST_FLAGS is not None:
-                javac_flags = CONFIG.JAVA.JAVAC_TEST_FLAGS
+                javac_flags = [CONFIG.JAVA.JAVAC_TEST_FLAGS]
             elif CONFIG.JAVA.JAVAC_FLAGS is not None:
-                javac_flags = CONFIG.JAVA.JAVAC_FLAGS
-            else:
-                javac_flags = ""
+                javac_flags = [CONFIG.JAVA.JAVAC_FLAGS]
 
-        javac_flags = '-g -encoding utf8 ' + javac_flags
+        javac_flags = ["-g", "-encoding utf8"] + javac_flags
 
         source_level = CONFIG.JAVA.SOURCE_LEVEL
         target_level = CONFIG.JAVA.TARGET_LEVEL
         release_level = CONFIG.JAVA.RELEASE_LEVEL
         if release_level:
-            javac_flags = f'--release {release_level} ' + javac_flags
+            javac_flags = [f"--release {release_level}"] + javac_flags
         else:
-            javac_flags = f'-source {source_level} -target {target_level} ' + javac_flags
+            javac_flags = [f"-source {source_level}", f"-target {target_level}"] + javac_flags
 
         javac = CONFIG.JAVA.JAVAC_TOOL
 
@@ -69,6 +67,7 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
             find += f' -not -path "$TMP_DIR/$(location {toolchain})/*"'
 
         srcflag = '`find $SRCS_JAVAC -name "*.java"`' if src_dir else '$SRCS_JAVAC'
+        javac_flags = " ".join(javac_flags)
         javac_cmd = f'mkdir -p _tmp/META-INF && "$TOOLS_JAVAC" {javac_flags} -classpath .:`{find} | tr \\\\\\\\n :` -d _tmp {srcflag}'
 
 
