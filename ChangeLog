@@ -1,3 +1,9 @@
+Version 0.4.3
+-------------
+    * `java_runtime_image`: exclude `java_toolchain` directory from JAR search (#49)
+      This allows `java_runtime_image` targets to be built with remote execution enabled.
+    * Correctly add Java dependencies to classpath when building JARs (#48)
+
 Version 0.4.2
 -------------
     * In `java_library`, only stringify `javac_flags` when needed (#45)
