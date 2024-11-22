@@ -224,10 +224,13 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
     if (launcher_module and not launcher_class) or (launcher_class and not launcher_module):
         fail("launcher_module and launcher_class must be defined together - they cannot be defined individually.")
     out = out or name
-    depflags = r'''`find "$TMP_DIR" -name "*.jar" | tr '\n' :`'''
+
+    find = f'find "$TMP_DIR" -name "*.jar"'
+    if toolchain:
+        find += f' -not -path "$TMP_DIR/$(location {toolchain})/*"'
     modules = ','.join(modules)
     default_jlink_args = [
-        f"--module-path {depflags}:{home}/jmods",
+        f"--module-path `{find} | tr '\\n' :`:{home}/jmods",
         f"--add-modules {modules}",
         f"--compress {compression}",
         f"--output {out}",
