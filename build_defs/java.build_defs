@@ -69,7 +69,7 @@ def java_library(name:str, srcs:list=None, src_dir:str=None, resources:list=[], 
 
         srcflag = '`find $SRCS_JAVAC -name "*.java"`' if src_dir else '$SRCS_JAVAC'
         javac_flags = " ".join(javac_flags)
-        javac_cmd = f'mkdir -p _tmp/META-INF && "$TOOLS_JAVAC" {javac_flags} -classpath .:`{find} | tr \\\\\\\\n :` -d _tmp {srcflag}'
+        javac_cmd = f'''mkdir -p _tmp/META-INF && "$TOOLS_JAVAC" {javac_flags} -classpath .:`{find} | tr '\\n' :` -d _tmp {srcflag}'''
 
 
         cmd = ' && '.join([
@@ -224,7 +224,7 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
     if (launcher_module and not launcher_class) or (launcher_class and not launcher_module):
         fail("launcher_module and launcher_class must be defined together - they cannot be defined individually.")
     out = out or name
-    depflags = r'`find "$TMP_DIR" -name "*.jar" | tr \\\\n :`'
+    depflags = r'''`find "$TMP_DIR" -name "*.jar" | tr '\n' :`'''
     modules = ','.join(modules)
     default_jlink_args = [
         f"--module-path {depflags}:{home}/jmods",
