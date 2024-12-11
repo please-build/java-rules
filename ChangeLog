@@ -1,3 +1,7 @@
+Version 0.4.4
+-------------
+    * `java_runtime_image` provides an entry point so it can be referenced directly
+
 Version 0.4.3
 -------------
     * `java_runtime_image`: exclude `java_toolchain` directory from JAR search (#49)
@@ -42,7 +46,7 @@ Version 0.2.2
 
 Version 0.2.1
 --------------
-    * Make the junit runner default to an absolute label 
+    * Make the junit runner default to an absolute label
 
 Version 0.1.0
 --------------
