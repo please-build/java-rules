@@ -250,6 +250,9 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
             "dbg": "$TOOLS_JLINK " + " ".join(default_jlink_args) + f" {jlink_args}",
             "opt": "$TOOLS_JLINK " + " ".join(default_jlink_args) + f" --strip-debug {jlink_args}",
         },
+        entry_points = {
+            "java": "bin/java",
+        },
         needs_transitive_deps=True,
         output_is_complete=True,
         binary=True,
@@ -258,6 +261,7 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
         visibility=visibility,
         tools=tools,
     )
+
 
 def java_binary(name:str, main_class:str=None, out:str=None, srcs:list=None, deps:list=[],
                 data:list=[], visibility:list=None, jvm_args:str=None, labels:list=[],
@@ -723,4 +727,3 @@ if CONFIG.BAZEL_COMPATIBILITY:
             test_only = test_only,
             visibility = visibility,
         )
-
