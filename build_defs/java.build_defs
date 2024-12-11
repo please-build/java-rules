@@ -251,7 +251,7 @@ def java_runtime_image(name:str, out:str=None, modules:list, launcher_module:str
             "opt": "$TOOLS_JLINK " + " ".join(default_jlink_args) + f" --strip-debug {jlink_args}",
         },
         entry_points = {
-            "java": "bin/java",
+            "java": f"{out}/bin/java",
         },
         needs_transitive_deps=True,
         output_is_complete=True,
