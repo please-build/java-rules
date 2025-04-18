@@ -374,7 +374,7 @@ def java_test(name:str, srcs:list, resources:list=None, resources_root:str=None,
     else:
         java = CONFIG.JAVA.JAVA_TOOL
 
-    test_package_arg = "-Dbuild.please.testpackage={test_package}" if test_package is not None else ""
+    test_package_arg = f"-Dbuild.please.testpackage={test_package}" if test_package is not None else ""
 
     cmd = 'ln -s "$(if [ -f "$TOOLS_JUNIT" ]; then echo "$TOOLS_JUNIT"; else echo "$(which "$TOOLS_JUNIT")"; fi)" . && ' + cmd
     test_cmd = f"$TOOLS_JAVA {test_package_arg} {jvm_args} -jar $(location :{name}) {flags}"
