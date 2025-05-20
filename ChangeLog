@@ -1,5 +1,8 @@
 Version 0.4.4
 -------------
+    * fix `java_test` using f-string to test package arg
+Version 0.4.4
+-------------
     * `java_runtime_image` provides an entry point so it can be referenced directly
 
 Version 0.4.3
