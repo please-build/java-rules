@@ -93,5 +93,11 @@ Help = The maven repo to use for maven_jar
 [PluginConfig "home"]
 ConfigKey = Home
 Optional = true
-Help = Sets the java home variable 
+Help = Sets the java home variable
 Inherit = True
+
+[PluginConfig "require_licences"]
+DefaultValue = false
+Type = bool
+Inherit = true
+Help = If set, the licences field on maven_jar will be mandatory

@@ -23,18 +23,27 @@ maven_jar(
     deps = [
         ":hamcrest",
     ],
+    licences = [
+        "EPL-1.0",
+    ],
 )
 
 maven_jar(
     name = "hamcrest",
     hash = "4877670629ab96f34f5f90ab283125fcd9acb7e683e66319a68be6eb2cca60de",
     id = "org.hamcrest:hamcrest-all:1.3",
+    licences = [
+        "BSD-3-Clause",
+    ],
 )
 
 maven_jar(
     name = "gson",
     hash = "53bc5fe7644db908e6071d6c8b59059acadce7fc14217933d7251994e8673104",
     id = "com.google.code.gson:gson:2.8.4",
+    licences = [
+        "Apache-2.0",
+    ],
 )
 
 # These are shipped as components of Please, but for easier management the code lives in
@@ -49,12 +58,18 @@ maven_jar(
         ":jacoco_shaded",
         ":junit",
     ],
+    licences = [
+        "Apache-2.0",
+    ],
 )
 
 maven_jar(
     name = "jacoco_shaded",
     hashes = ["9927bc9184d434c8ed0ed7ba46257df36e31dbd6bd224845d7a02d9e0894da4c"],
     id = "build.please:jacoco-shaded:0.8.4",
+    licences = [
+        "Apache-2.0",
+    ]
 )
 
 maven_jar(
@@ -66,6 +81,10 @@ maven_jar(
         ":logback-core",
         ":slf4j-api",
     ],
+    licences = [
+        "EPL-1.0",
+        "LGPL-2.1-only",
+    ],
 )
 
 maven_jar(
@@ -73,6 +92,10 @@ maven_jar(
     hash = "47c0fd342995d3315b8faccacc324b2a76143b27c430d4b2d6a29eabc31f5c14",
     id = "ch.qos.logback:logback-core:1.1.3",
     test_only = True,
+    licences = [
+        "EPL-1.0",
+        "LGPL-2.1-only",
+    ],
 )
 
 maven_jar(
@@ -80,4 +103,7 @@ maven_jar(
     hash = "3863e27005740d4d1289bf87b113efea115e9a22408a7d623be8004991232bfe",
     id = "org.slf4j:slf4j-api:1.7.10",
     test_only = True,
+    licences = [
+        "MIT",
+    ]
 )

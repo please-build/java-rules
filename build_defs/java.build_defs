@@ -534,6 +534,12 @@ def maven_jar(name:str, id:str, repository:str|list=None, labels:list=[], hash:s
 
 def _parse_maven_artifact(id, sources=True, licences=None):
     """Parses a Maven artifact in group:artifact:version format, with possibly some extras."""
+
+    if not licences:
+        msg = f'No licence found for {id}, should add licences = [...] to the rule'
+        if CONFIG.JAVA.REQUIRE_LICENCES:
+            fail(msg)
+
     parts = id.split(':')
     if len(parts) == 5:
         group, artifact, version = parts[:3]
