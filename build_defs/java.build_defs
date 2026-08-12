@@ -539,8 +539,6 @@ def _parse_maven_artifact(id, sources=True, licences=None):
         msg = f'No licence found for {id}, should add licences = [...] to the rule'
         if CONFIG.JAVA.REQUIRE_LICENCES:
             fail(msg)
-        else:
-            log.warning(msg)
 
     parts = id.split(':')
     if len(parts) == 5:
