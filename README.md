@@ -1,9 +1,9 @@
-# Java rules 
+# Java rules
 
 This repo provides Java rules for the [please](https://please.build) build system.
 
 # Basic usage
-See `./example` in this repo for a working example. 
+See `./example` in this repo for a working example.
 
 ```python
 # BUILD
@@ -23,18 +23,18 @@ java_library(
 )
 
 # src/test/java/build/please/foo/BUILD
-# A test for the above library. 
+# A test for the above library.
 java_test(
     name = "foo_test",
     srcs = ["FooTest.java"],
     deps = [
-        "//third_party/java:junit", 
+        "//third_party/java:junit",
         "//src/main/java/build/please/foo",
     ]
 )
 
 # src/main/java/build/please/foo/BUILD
-# This produces a self-executing .jar 
+# This produces a self-executing .jar
 java_binary(
     name = "app",
     main_class = "build.please.Main",
@@ -43,7 +43,7 @@ java_binary(
 )
 
 # third_party/java/BUILD
-# These rules pull down third party dependencies from maven. 
+# These rules pull down third party dependencies from maven.
 maven_jar(
     name = "junit",
     hash = "59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a",
@@ -65,8 +65,8 @@ Then add this to your `.plzconfig`:
 [Parse]
 PreloadSubincludes = @java_rules//build_defs:java
 ```
-Alternatively, if you're not using Java everywhere, you may add `subinclude("@java_rules//build_defs:java")` to each 
-BUILD individually. 
+Alternatively, if you're not using Java everywhere, you may add `subinclude("@java_rules//build_defs:java")` to each
+BUILD individually.
 
 ## Toolchain
 By default, Please will use the JDK on the path. Optionally, you may use `java_toolchain()` to manage your JDK:
@@ -92,9 +92,9 @@ Plugins are configured through the Plugin section like so:
 SomeConfig = some value
 ```
 
-The available configuration options for this plugin are documented here. 
+The available configuration options for this plugin are documented here.
 
-## JavacTool 
+## JavacTool
 The path to the Java compiler to use. Defaults to `javac`.
 
 ```
@@ -103,7 +103,7 @@ JavacTool = /opt/java/bin/javac
 ```
 
 ## JavacFlags
-Any additional flags to apply to the javac tool. 
+Any additional flags to apply to the javac tool.
 
 ```
 [Plugin "java"]
@@ -111,7 +111,7 @@ JavacFalgs = --flag1 --flag2
 ```
 
 ## JavacTestFlags
-Any additional flags to apply to the javac tool when compiling tests. 
+Any additional flags to apply to the javac tool when compiling tests.
 
 ```
 [Plugin "java"]
@@ -119,7 +119,7 @@ TestJavacFlags = --flag1 --flag2
 ```
 
 ## JunitRunner
-The tool used to run Java tests. Defaults to the junit runner for this plugin version 
+The tool used to run Java tests. Defaults to the junit runner for this plugin version
 i.e. `@java_rules//tools:junit_runner`
 
 ```
@@ -135,7 +135,7 @@ JunitRunner = //tools:my_custom_junit_runner
 ```
 
 ## SourceLevel
-The source level of the project. Defaults to 8. 
+The source level of the project. Defaults to 8.
 ```
 [Plugin "java"]
 SourceLevel = 15
@@ -156,7 +156,7 @@ ReleaseLevel = 15
 ```
 
 ## Toolchain
-If set, please will use the jdk provided by the `java_toolchain()` rule specified by this build label. See the toolchain 
+If set, please will use the jdk provided by the `java_toolchain()` rule specified by this build label. See the toolchain
 section above for more info.
 
 ```
@@ -166,7 +166,7 @@ Toolchain = //third_party/java:toolchain
 
 ## DefaultTestPackage
 The test package to use when none is specifically set on the `java_test()` rule. If not set, Please will run all tests
-present in the `.jar` that are not from third party code. 
+present in the `.jar` that are not from third party code.
 
 ```
 [Plugin "java"]
@@ -174,8 +174,8 @@ DefaultTestPackage = please.build.
 ```
 
 ## MavenRepo
-The maven repositories to load jars from. This value can be repeated and defaults to `https://repo1.maven.org/maven2` 
-and `https://repo.maven.apache.org/maven2`, the canonical Maven Central repository URLs. 
+The maven repositories to load jars from. This value can be repeated and defaults to `https://repo1.maven.org/maven2`
+and `https://repo.maven.apache.org/maven2`, the canonical Maven Central repository URLs.
 
 To add a custom repo, you may do so by setting the following:
 
@@ -184,4 +184,12 @@ To add a custom repo, you may do so by setting the following:
 MavenRepo = https://repo1.maven.org/maven2
 MavenRepo = https://repo.maven.apache.org/maven2
 MavenRepo = https://maven.repo.org
+```
+
+## RequireLicences
+To require licences for Mavan jars, you set the `RequireLicences` option to true.
+
+```
+[Plugin "java"]
+RequireLicences = true
 ```

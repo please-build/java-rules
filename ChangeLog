@@ -1,3 +1,7 @@
+Version 0.4.6
+-------------
+    * Add `require_licences` to plugin config
+
 Version 0.4.5
 -------------
     * fix `java_test` using f-string to test package arg
